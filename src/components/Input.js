@@ -1,8 +1,14 @@
 import {TextInput, StyleSheet} from 'react-native';
 
 const Input = props => {
-  const {placeholder} = props;
-  return <TextInput style={styles.textInput} placeholder={placeholder} />;
+  const {placeholder, onChangeText} = props;
+  return (
+    <TextInput
+      style={styles.textInput}
+      placeholder={placeholder}
+      onChangeText={e => onChangeText (e)}
+    />
+  );
 };
 
 const styles = StyleSheet.create ({

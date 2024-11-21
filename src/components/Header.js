@@ -3,10 +3,17 @@ import {View, Text, StyleSheet} from 'react-native';
 
 //functional components
 const Header = props => {
-  const {title} = props;
+  const {title, style} = props;
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>{title}</Text>
+      <Text
+        style={{
+          ...styles.text,
+          ...style,
+        }}
+      >
+        {title}
+      </Text>
     </View>
   );
 };

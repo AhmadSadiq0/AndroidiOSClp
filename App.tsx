@@ -1,160 +1,117 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
 
-import React, { useState, useEffect } from 'react';
-//Core components 
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ActivityIndicator,
-  FlatList,
-  Button,
-  Alert,
-  TextInput
-} from 'react-native';
-import Header from './src/components/HeaderClass'
-import Input from './src/components/Input';
+import * as React from 'react';
+import { createStaticNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './src/screens/HomeScreen';
+import DetailsScreen from './src/screens/DetailsScreen';
+import ContactScreen from './src/screens/ContactScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, Button } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import One from './src/screens/Tabs/One';
+import Two from './src/screens/Tabs/Two';
+import './gesture-handler';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 
-function App(): React.JSX.Element {
 
-  //useState => Hooks
-  //Why do we use useState to create a state
-  //What's a state?
-  //states are immutable
-  const [value, setValue] = useState(10)
-  const [number, setNumber] = useState(10)
-  const [num, setNum] = useState(101)
-
-  let count = 10
-  //JSX => Javascript xml
-  console.log('rendered')
-  const onButtonPressed = () => {
-    Alert.alert('Hello World')
+const bottomTabs = createBottomTabNavigator({
+  screens: {
+    One: One,
+    Two: Two
   }
-  const onAddPressed = () => {
-    setValue(value + 1)
-    // count++
-    // console.log(count)
-  }
-  const onChangeNumber = () => {
-    setNumber(number + 1)
-    // count++
-    // console.log(count)
-  }
-  const onChangeNum = () => {
-    setNum(num + 1)
-    // count++
-    // console.log(count)
-  }
-  //mounting, updating and unmounting
-  useEffect(() => {
-    alert('Welcome')
-    //api call
+})
+const drawerStack = createDrawerNavigator({
+  screens: {
+    Home: {
+      screen: bottomTabs,
+      options: {
+        title: 'Home Screen For CLP',
+        headerStyle: {
+          backgroundColor: '#f4511e',
 
-    //unmounting
-    // return () => {
-    //   alert('Un mounting')
-    // }
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
 
-  }, [])
+      }
 
+    },
+    Details: {
+      screen: DetailsScreen,
+      options: {
+        headerStyle: {
+          backgroundColor: '#f4511e',
+
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerRight: () => (
+          <Button title='Info' onPress={() => alert('This is a button!')}></Button>
+        ),
+      }
+    },
+    Contact: ContactScreen
+  },
+})
+
+const RootStack = createNativeStackNavigator({
+  screens: {
+    Home: {
+      screen: bottomTabs,
+      options: {
+        title: 'Home Screen For CLP',
+        headerStyle: {
+          backgroundColor: '#f4511e',
+
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+
+      }
+
+    },
+    Details: {
+      screen: DetailsScreen,
+      options: {
+        headerStyle: {
+          backgroundColor: '#f4511e',
+
+        },
+        headerTintColor: '#fff',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        headerRight: () => (
+          <Button title='Info' onPress={() => alert('This is a button!')}></Button>
+        ),
+      }
+    },
+    Contact: ContactScreen
+  },
+});
+
+
+
+const Navigation = createStaticNavigation(drawerStack);
+
+export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        <Header title='Welcome' />
-        <View style={styles.row}>
-          <Text>{"Value " + value}</Text>
-          <Text>{"Number " + number}</Text>
-          <Text>{"Num is " + num}</Text>
-
-        </View>
-
-
-
-        <Text>Hello Consultants</Text>
-        <Text>Welcome to React Native CLP!</Text>
-        {/* <Image
-          source={{
-            uri: 'https://reactnative.dev/docs/assets/p_cat2.png',
-          }}
-          style={{ width: 200, height: 200 }}
-        /> */}
-        <Input placeholder={'Enter your email'} />
-        <Input placeholder={"Enter your password"} />
-
-        <ActivityIndicator />
-        <ActivityIndicator
-          animating={true}
-          color={'red'}
-          size={'large'}
-        />
-
-        <Button
-          onPress={onAddPressed}
-          title="Add"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-        <Button
-          onPress={onChangeNumber}
-          title="Update Number"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-        <Button
-          onPress={onChangeNum}
-          title="Update Num"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-        <Header title='Users' />
-
-        <FlatList
-          data={[{ firstName: 'Arpit', lastName: '', age: 26 },
-          { firstName: 'Daniel', lastName: '', age: 26 }]}
-          renderItem={({ item }) => {
-            return (
-              <Text style={styles.flatListItem}>{item.firstName}</Text>
-            )
-          }}
-          keyExtractor={item => item.firstName}
-        />
-
-        <Button
-          onPress={onButtonPressed}
-          title="Learn More"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
-
-      </View>
+    <SafeAreaView style={styles.mainContainer}>
+      <Navigation />
     </SafeAreaView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'brown'
-  }, flatListItem: {
-    fontSize: 18,
-    backgroundColor: '#d3d3d3',
-    height: 30,
-    margin: 5
-
-  }, row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+  mainContainer: {
+    flex: 1
   }
-});
-
-export default App;
+})
