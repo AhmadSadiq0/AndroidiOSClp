@@ -1,34 +1,42 @@
 import {useNavigation} from '@react-navigation/native';
 import {View, Text, StyleSheet, Button} from 'react-native';
-import axios from 'axios';
 import {useEffect, useState} from 'react';
 import Input from '../../components/Input';
+import {useWeather} from '../../hooks/useWeather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 const One = props => {
   const navigation = useNavigation ();
   const [currentTemperature, setCurrentTemperature] = useState (null);
-  const [city, setCity] = useState (null);
+  const [city, setCity] = useState ('London');
 
-  const loadWeather = async () => {
+  const {data} = useWeather (city);
+
+  const storeData = async value => {
     try {
-      let response = await axios.get (
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=4251b5f89948a271b3def71083a728f0&units=metric`
-      );
-      setCurrentTemperature (response.data.main.temp);
+      await AsyncStorage.setItem ('my-key', city);
     } catch (e) {
-      console.log (e);
+      // saving error
+      alert (e);
     }
   };
-
-  useEffect (() => {
-    loadWeather ();
-  }, []);
-
+  const getData = async value => {
+    try {
+      let result = await AsyncStorage.getItem ('my-key');
+      alert (result);
+    } catch (e) {
+      // saving error
+      alert (e);
+    }
+  };
   return (
     <View>
       <Text>Weather App</Text>
       <Input placeholder="Enter City Name" onChangeText={t => setCity (t)} />
-      <Button title="Search" onPress={loadWeather} />
-      <Text>Current Temperature In {city} Is: {currentTemperature}</Text>
+      {/* <Button title="Search" onPress={loadWeather} /> */}
+      <Text>
+        Current Temperature In {city} Is: {data ? data.main.temp : null}
+      </Text>
       <Button
         title="Go to details"
         onPress={() => {
@@ -38,6 +46,9 @@ const One = props => {
           });
         }}
       />
+      <Button title="Save City" onPress={storeData} />
+      <Button title="Get City" onPress={getData} />
+
     </View>
   );
 };
